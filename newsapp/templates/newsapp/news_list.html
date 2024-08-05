@@ -1,0 +1,25 @@
+{% extends 'newsapp/base.html' %}
+{% load censor %}
+
+{% block content %}
+<div class="mt-5">
+    <h2>Новости</h2>
+    <ul class="list-unstyled">
+        {% for post in posts %}
+        <li class="mb-4">
+            <h3><a href="{% url 'news_detail' post.id %}">{{ post.title|censor }}</a></h3>
+            <div class="text-muted">
+                <span>{{ post.author.authorUser.username }}</span> |
+                <span>{{ post.get_category_display }}</span> |
+                <span>{{ post.dateCreation }}</span>
+            </div>
+            <p>{{ post.preview|censor|truncatechars:20 }}</p>
+            {% if post.image %}
+            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+            {% endif %}
+            <hr>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

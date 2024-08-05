@@ -1,0 +1,21 @@
+{% extends 'newsapp/base.html' %}
+{% load censor %}
+
+{% block content %}
+<div class="mt-5">
+    <h2>{{ post.title|censor }}</h2>
+    <div class="text-muted">
+        <span>{{ post.author.authorUser.username }}</span> |
+        <span>
+            {% for category in post.postCategory.all %}
+                {{ category.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </span> |
+        <span>{{ post.dateCreation }}</span>
+    </div>
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+    {% endif %}
+    <p>{{ post.text|censor }}</p>
+</div>
+{% endblock %}
