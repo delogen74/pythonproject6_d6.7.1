@@ -1,10 +1,17 @@
 from django.contrib import admin
-from .models import *
+from .models import Post, Author, Category, PostCategory, Comment
 
+class PostCategoryInline(admin.TabularInline):
+    model = PostCategory
+    extra = 1
 
-admin.site.register(Category)
-admin.site.register(Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'author', 'dateCreation', 'rating')
+    list_filter = ('author', 'dateCreation', 'rating')
+    search_fields = ('title', 'text')
+    inlines = [PostCategoryInline]
+
+admin.site.register(Post, PostAdmin)
 admin.site.register(Author)
+admin.site.register(Category)
 admin.site.register(Comment)
-admin.site.register(PostCategory)
-

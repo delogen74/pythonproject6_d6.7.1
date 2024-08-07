@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'newsapp/base.html' %}
+
+{% block content %}
+  <h2>Удалить {{ object.title }}?</h2>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a href="{% url 'news_list' %}" class="btn btn-secondary">Отмена</a>
+  </form>
+{% endblock %}

@@ -4,10 +4,11 @@
 {% block content %}
 <div class="mt-5">
     <h2>Новости</h2>
+    <a href="{% url 'post_create' %}" class="btn btn-primary mb-4">Создать пост</a>
     <ul class="list-unstyled">
-        {% for post in posts %}
+        {% for post in page_obj %}
         <li class="mb-4">
-            <h3><a href="{% url 'news_detail' post.id %}">{{ post.title|censor }}</a></h3>
+            <h3><a href="{% url 'news_detail' pk=post.id %}">{{ post.title|censor }}</a></h3>
             <div class="text-muted">
                 <span>{{ post.author.authorUser.username }}</span> |
                 <span>{{ post.get_category_display }}</span> |
@@ -21,5 +22,20 @@
         </li>
         {% endfor %}
     </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ page_obj.previous_page_number }}">предыдущая</a>
+            {% endif %}
+            <span class="current">
+                Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">следующая</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 {% endblock %}

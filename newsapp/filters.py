@@ -1,17 +1,25 @@
-from django import template
-import re
+import django_filters
+from django.forms import DateTimeInput
+from .models import Post, Category
 
-register = template.Library()
+class PostFilter(django_filters.FilterSet):
+    postCategory = django_filters.ModelChoiceFilter(
+        queryset=Category.objects.all(),
+        label='Категория',
+        to_field_name='id'
+    )
+    date_after = django_filters.DateTimeFilter(
+        field_name='dateCreation',
+        lookup_expr='gt',
+        widget=DateTimeInput(
+            format='%Y-%m-%dT%H:%M',
+            attrs={'type': 'datetime-local'},
+        ),
+        label='Позже указанной даты'
+    )
 
-CENSOR_WORDS = ['недопустимоеСлово1', 'недопустимоеСлово2']
-
-
-@register.filter(name='censor')
-def censor(text):
-    if not isinstance(text, str):
-        raise ValueError("The censor filter can only be applied to strings.")
-
-    for word in CENSOR_WORDS:
-        pattern = re.compile(re.escape(word), re.IGNORECASE)
-        text = pattern.sub(lambda match: match.group()[0] + '*' * (len(match.group()) - 1), text)
-    return text
+    class Meta:
+        model = Post
+        fields = {
+            'title': ['icontains'],
+        }

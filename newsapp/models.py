@@ -1,5 +1,3 @@
-# newsapp/models.py
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
@@ -28,21 +26,21 @@ class Category(models.Model):
         return self.name
 
 class Post(models.Model):
-    author = models.ForeignKey(Author, on_delete=models.CASCADE)
-    category = models.ForeignKey('Category', related_name='posts', on_delete=models.CASCADE, default=1)
     NEWS = 'NW'
     ARTICLE = 'AR'
-    CATEGORY_CHOICES = (
+    CATEGORY_CHOICES = [
         (NEWS, 'Новость'),
         (ARTICLE, 'Статья'),
-    )
-    categoryType = models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=ARTICLE)
+    ]
+
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+    categoryType = models.CharField(max_length=2, choices=CATEGORY_CHOICES, default=NEWS)
     dateCreation = models.DateTimeField(auto_now_add=True)
-    postCategory = models.ManyToManyField('Category', related_name='post_categories', through='PostCategory')
+    postCategory = models.ManyToManyField(Category, through='PostCategory')
     title = models.CharField(max_length=200)
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
-    image = models.ImageField(upload_to='post_images/', null=True, blank=True)  # Новое поле для изображения
+    image = models.ImageField(upload_to='post_images/', null=True, blank=True)
 
     def save(self, *args, **kwargs):
         self.text = self.censor_vulgar_words(self.text)

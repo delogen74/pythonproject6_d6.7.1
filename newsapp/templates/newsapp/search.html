@@ -1,10 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'newsapp/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block content %}
+<h2>Поиск новостей</h2>
+<form method="get">
+    {{ filter.form.as_p }}
+    <button type="submit" class="btn btn-primary">Поиск</button>
+</form>
+
+<h2>Результаты поиска</h2>
+<ul class="list-unstyled">
+    {% for post in page_obj %}
+    <li class="mb-4">
+        <h3><a href="{% url 'news_detail' pk=post.id %}">{{ post.title }}</a></h3>
+        <div class="text-muted">
+            <span>{{ post.author.authorUser.username }}</span> |
+            <span>{{ post.get_category_display }}</span> |
+            <span>{{ post.dateCreation }}</span>
+        </div>
+        <p>{{ post.preview|truncatechars:20 }}</p>
+        {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}" class="img-fluid">
+        {% endif %}
+        <hr>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -2,21 +2,26 @@ from django import forms
 from .models import Post, Comment
 
 class PostForm(forms.ModelForm):
+    CATEGORY_CHOICES = [
+        ('NW', 'Новость'),
+        ('AR', 'Статья'),
+    ]
+    categoryType = forms.ChoiceField(choices=CATEGORY_CHOICES, label='Тип поста')
+
     class Meta:
         model = Post
-        fields = ['title', 'text', 'category', 'image']
-        widgets = {
-            'title': forms.TextInput(attrs={'class': 'form-control'}),
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
-            'category': forms.Select(attrs={'class': 'form-control'}),
-            'image': forms.ClearableFileInput(attrs={'class': 'form-control-file'}),
+        fields = ['title', 'text', 'image', 'postCategory', 'categoryType']
+        labels = {
+            'title': 'Заголовок',
+            'text': 'Текст',
+            'image': 'Изображение',
+            'postCategory': 'Категория',
         }
 
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['commentUser', 'text']  # Изменено с 'author' на 'commentUser'
-        widgets = {
-            'commentUser': forms.TextInput(attrs={'class': 'form-control'}),
-            'text': forms.Textarea(attrs={'class': 'form-control'}),
+        fields = ['text']
+        labels = {
+            'text': 'Комментарий',
         }
