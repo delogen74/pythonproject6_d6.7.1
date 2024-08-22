@@ -31,6 +31,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'main_info' %}">Информация</a>
                         </li>
+                         {% if user.is_authenticated %}
+                            <li><a href="{% url 'profile' %}">Мой профиль</a></li>
+                        {% else %}
+                            <li><a href="{% url 'account_login' %}">Войти</a></li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

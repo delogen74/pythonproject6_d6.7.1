@@ -4,7 +4,9 @@
 {% block content %}
 <div class="mt-5">
     <h2>Новости</h2>
-    <a href="{% url 'post_create' %}" class="btn btn-primary mb-4">Создать пост</a>
+    {% if is_author %}
+        <a href="{% url 'post_create' %}" class="btn btn-primary mb-4">Создать пост</a>
+    {% endif %}
     <ul class="list-unstyled">
         {% for post in page_obj %}
         <li class="mb-4">

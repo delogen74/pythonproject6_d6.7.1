@@ -1,0 +1,8 @@
+{% extends 'newsapp/base.html' %}
+
+{% block content %}
+    <h1>Мой профиль</h1>
+    <p>Email: {{ user.email }}</p>
+    <p>Имя пользователя: {{ user.username }}</p>
+    <a href="{% url 'account_logout' %}">Выйти</a>
+{% endblock %}
