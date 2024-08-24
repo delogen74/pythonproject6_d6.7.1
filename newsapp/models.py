@@ -1,7 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
-from django.core.validators import MinValueValidator
+from django.db import models
+
+class DigestRun(models.Model):
+    last_run = models.DateTimeField(auto_now_add=True)
+
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -9,21 +13,30 @@ class Author(models.Model):
 
     def update_rating(self):
         postRat = self.post_set.aggregate(postRating=Sum('rating'))
-        pRat = 0
-        pRat += postRat.get('postRating') or 0
+        pRat = postRat.get('postRating') or 0
 
         commentRat = self.authorUser.comment_set.aggregate(commentRating=Sum('rating'))
-        cRat = 0
-        cRat += commentRat.get('commentRating') or 0
+        cRat = commentRat.get('commentRating') or 0
 
         self.ratingAuthor = pRat * 3 + cRat
         self.save()
 
+    def __str__(self):
+        return self.authorUser.username
+
 class Category(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
+class Subscriber(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriber_subscriptions')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='subscriber_subscriptions')
+
+    def __str__(self):
+        return f'{self.user.username} subscribed to {self.category.name}'
+
 
 class Post(models.Model):
     NEWS = 'NW'
@@ -63,9 +76,15 @@ class Post(models.Model):
     def preview(self):
         return self.text[0:123] + '...'
 
+    def __str__(self):
+        return self.title
+
 class PostCategory(models.Model):
     postThrough = models.ForeignKey(Post, on_delete=models.CASCADE)
     categoryThrough = models.ForeignKey(Category, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.postThrough.title} - {self.categoryThrough.name}'
 
 class Comment(models.Model):
     commentPost = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -91,3 +110,6 @@ class Comment(models.Model):
     def dislike(self):
         self.rating -= 1
         self.save()
+
+    def __str__(self):
+        return f'{self.commentUser.username} - {self.commentPost.title}'

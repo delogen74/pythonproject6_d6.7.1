@@ -1,0 +1,21 @@
+{% extends 'newsapp/base.html' %}
+
+{% block content %}
+<h2>Подписки на категории</h2>
+<ul>
+    {% for category in categories %}
+    <li>
+        {{ category.name }}
+        <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="category_id" value="{{ category.id }}">
+            {% if category.user_subscribed %}
+                <button type="submit" name="action" value="unsubscribe">Отписаться</button>
+            {% else %}
+                <button type="submit" name="action" value="subscribe">Подписаться</button>
+            {% endif %}
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
